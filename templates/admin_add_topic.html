@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="section-title mb-4">Add New Practice Topic</h2>
+
+<div class="form-container-vibrant p-5">
+    <form method="POST" action="{{ url_for('admin_add_topic') }}">
+        
+        <div class="mb-3">
+            <label for="name" class="form-label">Topic Name (e.g., Probability, Pointers in C)</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-select" id="category" name="category" required>
+                <option value="Aptitude">Aptitude</option>
+                <option value="Coding">Coding</option>
+                <option value="Logical Reasoning">Logical Reasoning</option>
+                <option value="Verbal Ability">Verbal Ability</option>
+                <option value="Technical">Technical MCQ</option>
+            </select>
+        </div>
+        
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+        </div>
+        
+        <button type="submit" class="btn btn-vibrant mt-3 w-100">Create Topic</button>
+    </form>
+</div>
+{% endblock %}

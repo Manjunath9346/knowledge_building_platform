@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ playlist.name }} – Playlist{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-white">{{ playlist.name }}</h2>
+    <p class="text-secondary">Total: {{ courses|length }} courses</p>
+
+    <div class="row mt-4">
+        {% if courses %}
+            {% for course in courses %}
+            <div class="col-md-4 mb-4">
+                {% include 'course_card.html' %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-secondary">This playlist is empty.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

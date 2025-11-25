@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+{% block title %}{{ course.title }}{% endblock %}
+
+<!-- ⭐ MODAL BLOCK (placed correctly under body via base.html) -->
+{% block modals %}
+<div id="playlistModal" class="modal fade" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content glass-card">
+
+        <div class="modal-header border-0">
+            <h5 class="modal-title text-white">Add to Playlist</h5>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">X</button>
+        </div>
+
+        <div class="modal-body">
+            <form id="playlistForm" method="POST" action="/playlist/add/{{ course.id }}">
+                <label class="form-label text-white-50">Choose Playlist</label>
+                <select name="playlist_id" class="form-control glass-input">
+                    {% for p in playlists %}
+                        <option value="{{ p.id }}">{{ p.name }}</option>
+                    {% endfor %}
+                </select>
+
+                <button class="btn btn-vibrant w-100 mt-3">Add</button>
+            </form>
+
+            <hr class="text-secondary">
+
+            <h6 class="text-white">Create New Playlist</h6>
+            <form method="POST" action="/playlist/create/{{ course.id }}">
+                <input type="text" name="name" class="form-control glass-input mb-2" placeholder="Playlist Name">
+                <button class="btn btn-vibrant w-100">Create + Add</button>
+            </form>
+        </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    }
+    .glass-input, .glass-textarea {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        color: #fff;
+        padding: 0.6rem 1rem;
+        width: 100%;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row g-4">
+
+        <!-- LEFT CONTENT -->
+        <div class="col-lg-8">
+            <div class="glass-card p-4">
+
+                <h2 class="text-white">{{ course.title }}</h2>
+
+                <p class="text-secondary mb-3">
+                    Uploaded by:
+                    <a href="{{ url_for('creator_page', username=course.uploader) }}" class="text-info">
+                        {{ course.uploader }}
+                    </a>
+                </p>
+
+                <h4 class="text-white mt-4">Overview</h4>
+                <p class="text-white-50">{{ course.description or 'No description provided.' }}</p>
+
+                <hr class="text-secondary my-4">
+
+                {% if not course.sections or course.sections|length == 0 %}
+                    <h3 class="text-white mb-4">Content</h3>
+
+                    {% if course.filetype in ['mp4','mp3','wav'] %}
+                        <video controls class="w-100 rounded" style="max-height: 500px;">
+                            <source src="{{ url_for('media', filename=course.filename) }}" type="video/mp4">
+                        </video>
+
+                    {% elif course.filetype == 'pdf' %}
+                        <embed src="{{ url_for('media', filename=course.filename) }}"
+                               type="application/pdf"
+                               style="width:100%; height:700px; border:none;" />
+
+                    {% elif course.filetype in ['jpg','jpeg','png'] %}
+                        <img src="{{ url_for('media', filename=course.filename) }}" class="img-fluid rounded" />
+
+                    {% elif course.filetype == 'text' %}
+                        <div class="glass-card p-3 mt-3"><p class="text-white">{{ course.content_text | safe }}</p></div>
+
+                    {% else %}
+                        {% if course.filename %}
+                            <div class="text-center mt-4">
+                                <p class="text-warning">This file cannot be previewed.</p>
+                                <a href="{{ url_for('download_course', course_id=course.id) }}" class="btn btn-primary">Download File</a>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <h3 class="text-white mb-4">Course Curriculum</h3>
+
+                    <div class="accordion accordion-flush" id="courseCurriculum">
+                        {% for section in course.sections %}
+                        <div class="accordion-item glass-card mb-2 rounded">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button bg-transparent text-white" type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#sec{{ section.id }}">
+                                    <span class="fw-bold text-info me-3">#{{ section.sequence_order }}</span>
+                                    {{ section.title }}
+                                    <span class="badge bg-secondary ms-3">{{ section.lessons|length }} Lessons</span>
+                                </button>
+                            </h2>
+                            <div id="sec{{ section.id }}" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <ul class="list-group list-group-flush">
+                                        {% for lesson in section.lessons %}
+                                        <li class="list-group-item bg-transparent text-white-50 d-flex justify-content-between">
+                                            <a href="{{ url_for('view_lesson', lesson_id=lesson.id) }}" class="text-white">
+                                                <i class="fas fa-file-alt text-warning me-2"></i>
+                                                {{ section.sequence_order }}.{{ lesson.sequence_order }} - {{ lesson.title }}
+                                            </a>
+                                            <button class="btn btn-sm btn-vibrant save-progress-btn" data-lesson="{{ lesson.id }}">Mark Complete</button>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <hr class="text-secondary my-4">
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    {% if 'user_id' in session %}
+                        {% if liked %}
+                            <form action="{{ url_for('unlike_course', course_id=course.id) }}" method="post">
+                                <button class="btn btn-danger">Unlike</button>
+                            </form>
+                        {% else %}
+                            <form action="{{ url_for('like_course', course_id=course.id) }}" method="post">
+                                <button class="btn btn-vibrant">Like</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if 'user_id' in session %}
+                        {% if watch_later %}
+                            <form action="{{ url_for('remove_from_watch_later', course_id=course.id) }}" method="post">
+                                <button class="btn btn-secondary">Saved</button>
+                            </form>
+                        {% else %}
+                            <form action="{{ url_for('add_to_watch_later', course_id=course.id) }}" method="post">
+                                <button class="btn btn-vibrant">Save for Later</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+
+                    <button class="btn btn-vibrant" data-bs-toggle="modal" data-bs-target="#playlistModal">+ Add to Playlist</button>
+
+                    <button id="shareButton" class="btn btn-vibrant">Share</button>
+
+                    <span class="ms-3 text-secondary">{{ like_count }} likes</span>
+                </div>
+
+                <hr class="text-secondary my-4">
+
+                <h4 class="text-white">Comments</h4>
+
+                {% if 'user_id' in session %}
+                <form action="{{ url_for('post_comment', course_id=course.id) }}" method="post" class="mb-3">
+                    <textarea class="glass-textarea" name="content" rows="3" placeholder="Add a comment..."></textarea>
+                    <button class="btn btn-vibrant mt-2">Post Comment</button>
+                </form>
+                {% endif %}
+
+                {% for comment in comments %}
+                <div class="glass-card mb-2">
+                    <strong>{{ comment.username }}</strong>
+                    <small class="text-secondary float-end">{{ comment.created_at }}</small>
+                    <p class="text-white-50">{{ comment.content }}</p>
+                </div>
+                {% else %}
+                <p class="text-secondary">No comments yet.</p>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div class="col-lg-4">
+            <div class="glass-card p-4">
+                <h5 class="text-white mb-3">Course Details</h5>
+
+                <p class="text-white-50">
+                    <strong>Price:</strong>
+                    {% if course.is_paid %}
+                        ₹{{ "%.2f"|format(course.price) }}
+                    {% else %} Free {% endif %}
+                </p>
+
+                {% if 'user_id' in session and course.filename %}
+                <a href="{{ url_for('download_course', course_id=course.id) }}" class="btn btn-vibrant w-100 mb-2">Download File</a>
+                {% endif %}
+
+                {% if 'user_id' in session and session['user_id'] == course.uploader_id %}
+                <a href="{{ url_for('edit_course', course_id=course.id) }}" class="btn btn-outline-light w-100 mb-2">Edit</a>
+
+                {% if course.sections|length > 0 %}
+                <a href="{{ url_for('manage_course_content', course_id=course.id) }}" class="btn btn-warning w-100 mb-2">Manage Curriculum</a>
+                {% endif %}
+
+                <form action="{{ url_for('delete_course', course_id=course.id) }}" method="post" onsubmit="return confirm('Are you sure?');">
+                    <button class="btn btn-danger w-100">Delete</button>
+                </form>
+                {% endif %}
+
+                {% if 'user_id' in session and session['user_id'] != course.uploader_id %}
+                <a href="{{ url_for('report_course', course_id=course.id) }}" class="btn btn-vibrant w-100 mt-2">Report</a>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.getElementById('shareButton').onclick = function () {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Link copied to clipboard!");
+};
+
+document.querySelectorAll(".save-progress-btn").forEach(btn => {
+    btn.onclick = () => {
+        btn.innerHTML = "✔ Completed";
+        btn.classList.add("btn-success");
+    };
+});
+</script>
+
+{% endblock %}

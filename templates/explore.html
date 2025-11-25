@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="section-title mb-4">Explore Courses</h2>
+
+<div class="form-container-vibrant p-4 mb-4">
+    <form action="{{ url_for('explore') }}" method="get" class="row g-3 align-items-center">
+        
+        <div class="col-lg-5 col-md-12">
+            <input name="q" class="form-control" placeholder="Search courses and creators..." value="{{ q or '' }}">
+        </div>
+        
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <select name="filetype" class="form-select">
+                <option value="all">All File Types</option>
+                {% for ft in unique_file_types %}
+                <option value="{{ ft }}" {% if filetype_filter == ft %}selected{% endif %}>{{ ft | upper }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <select name="is_paid_filter" class="form-select">
+                <option value="all" {% if is_paid_filter == 'all' %}selected{% endif %}>All Prices</option>
+                <option value="free" {% if is_paid_filter == 'free' %}selected{% endif %}>Free Courses</option>
+                <option value="paid" {% if is_paid_filter == 'paid' %}selected{% endif %}>Paid Courses</option>
+            </select>
+        </div>
+
+        <div class="col-lg-2 col-md-4 col-sm-12 d-flex">
+            <button class="btn btn-primary flex-grow-1 me-2" type="submit">Filter</button>
+            {% if q or filetype_filter != 'all' or is_paid_filter != 'all' %}
+            <a href="{{ url_for('explore') }}" class="btn btn-vibrant-secondary">Clear</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+{% if not courses and (q or filetype_filter != 'all' or is_paid_filter != 'all') %}
+<p class="text-secondary text-center">No courses found matching your criteria.</p>
+{% elif not courses %}
+<p class="text-center text-white">No courses available yet. Be the first to <a href="{{ url_for('upload') }}">upload</a>!</p>
+{% else %}
+<div class="row">
+    {% for course in courses %}
+    <div class="col-lg-3 col-md-4 mb-4">
+        {% include 'course_card.html' %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}

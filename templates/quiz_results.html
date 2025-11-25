@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Results: {{ topic_name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <h2 class="section-title text-center mb-4 text-white">Quiz Results for {{ topic_name }}</h2>
+
+            <div class="d-flex justify-content-around bg-success-dark text-white p-4 rounded-3 mb-4 shadow">
+                <div class="text-center">
+                    <p class="mb-0 fs-5">Final Score</p>
+                    <h3 class="fw-bold display-4">{{ score }}/{{ total_questions }}</h3>
+                </div>
+                <div class="text-center">
+                    <p class="mb-0 fs-5">Time Taken</p>
+                    {% set minutes = time_taken // 60 %}
+                    {% set seconds = time_taken % 60 %}
+                    <h3 class="fw-bold display-4">{{ '%02d' | format(minutes) }}:{{ '%02d' | format(seconds) }}</h3>
+                </div>
+            </div>
+
+            {% for result in results %}
+                {% set status_class = 'success' if result.is_correct else 'danger' %}
+                {% set status_icon = 'check-circle' if result.is_correct else 'times-circle' %}
+
+                <div class="card shadow mb-4 glass-card border border-{{ status_class }}">
+                    <div class="card-header bg-{{ status_class }} text-white d-flex justify-content-between">
+                        Question {{ loop.index }} - ({{ result.question_type | upper }})
+                        <i class="fas fa-{{ status_icon }} fa-lg"></i>
+                    </div>
+
+                    <div class="card-body">
+                        <p class="text-white fw-bold">{{ result.question_text }}</p>
+
+                        {% if result.code_snippet %}
+                        <pre class="bg-dark text-info p-3 rounded-3 my-3"><code>{{ result.code_snippet }}</code></pre>
+                        {% endif %}
+
+                        <div class="mt-3">
+                            <p class="fw-bold text-white-50">Your Answer:</p>
+                            
+                            {% if result.question_type == 'mcq' %}
+                                {% set user_answered_option_id = result.user_answer | string %}
+                                
+                                <ul class="list-unstyled">
+                                {% for option in result.options %}
+                                    {% set opt_class = '' %}
+                                    {% if option.is_correct == 1 %}
+                                        {% set opt_class = 'text-success fw-bold' %}
+                                    {% elif option.id | string == user_answered_option_id %}
+                                        {% set opt_class = 'text-danger fw-bold' %}
+                                    {% endif %}
+
+                                    <li class="{{ opt_class }}">
+                                        {% if option.is_correct == 1 %}<i class="fas fa-check-circle text-success me-2"></i>{% endif %}
+                                        {% if option.id | string == user_answered_option_id and not option.is_correct %}<i class="fas fa-times-circle text-danger me-2"></i>{% endif %}
+                                        {{ option.option_text }}
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                                
+                            {% else %}
+                                <textarea class="form-control mb-3 text-white bg-dark-glass" rows="3" readonly>{{ result.user_answer if result.user_answer else 'No answer provided' }}</textarea>
+                            {% endif %}
+                        </div>
+
+                        {% if not result.is_correct %}
+                        <div class="mt-4 p-3 border-start border-3 border-success bg-light-dark-trans">
+                            <p class="fw-bold text-success mb-1">Correct Answer:</p>
+                            <p class="text-white">{{ result.correct_answer_display }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if result.explanation %}
+                        <div class="mt-4 p-3 border-top border-secondary pt-3">
+                            <p class="fw-bold text-info mb-1">Explanation:</p>
+                            <p class="text-white">{{ result.explanation }}</p>
+                        </div>
+                        {% endif %}
+                        
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="text-center mt-5">
+                <a href="{{ url_for('practice_center') }}" class="btn btn-vibrant btn-lg">Return to Practice Center</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

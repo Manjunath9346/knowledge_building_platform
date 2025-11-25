@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    /* Glass card container */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05); /* semi-transparent */
+        backdrop-filter: blur(10px); /* frosted glass effect */
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+        transition: all 0.3s ease;
+    }
+
+    .glass-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Input fields */
+    .glass-input {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+        border-radius: 10px;
+        padding: 0.6rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .glass-input:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid #fff;
+        outline: none;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Checkbox */
+    .glass-checkbox {
+        accent-color: #fff;
+        transform: scale(1.2);
+    }
+
+    /* Buttons */
+    .glass-button {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        padding: 0.8rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .glass-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+        color: #fff;
+    }
+
+    /* Gradient button (optional) */
+    .gradient-btn {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5);
+    }
+
+    .gradient-btn:hover {
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.7);
+    }
+
+    /* Labels */
+    label {
+        font-weight: 600;
+        color: #fff;
+    }
+
+    /* Thumbnail image border */
+    .glass-image-border {
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Title gradient text */
+    .gradient-text {
+        background: linear-gradient(90deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+</style>
+
+<div class="glass-card p-4 animate__animated animate__fadeInUp" style="max-width: 600px; margin: 2rem auto;">
+    <h3 class="gradient-text mb-4 text-center">Edit Course</h3>
+    <form method="post" action="{{ url_for('edit_course', course_id=course.id) }}" enctype="multipart/form-data">
+        
+        <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input name="title" class="form-control glass-input" value="{{ course.title }}" required>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control glass-input" rows="4">{{ course.description }}</textarea>
+        </div>
+        
+        <div class="mb-3 form-check">
+            <input type="checkbox" name="is_paid" class="form-check-input glass-checkbox" id="is_paid" {% if course.is_paid %}checked{% endif %}>
+            <label class="form-check-label" for="is_paid">Paid</label>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Price</label>
+            <input name="price" type="number" step="0.01" class="form-control glass-input" value="{{ course.price }}">
+        </div>
+        
+        <div class="mb-4">
+            <label class="form-label">Replace Thumbnail (optional)</label>
+            {% if course.thumbnail_filename %}
+                <p><img src="{{ url_for('media', filename=course.thumbnail_filename) }}" width="100" class="img-thumbnail glass-image-border"></p>
+            {% endif %}
+            <input type="file" name="thumbnail" class="form-control glass-input" accept="image/png, image/jpeg, image/gif">
+        </div>
+        
+        <div class="mb-4">
+            <label class="form-label">Replace File (optional)</label>
+            <input type="file" name="file" class="form-control glass-input">
+        </div>
+        
+        <button class="btn w-100 gradient-btn glass-button text-white">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

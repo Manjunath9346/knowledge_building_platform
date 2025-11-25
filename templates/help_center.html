@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="form-container-vibrant shadow">
+            <h2 class="mb-4 section-title">Help Center</h2>
+            <p class="text-secondary mb-4">Have a question or run into an issue? Send us a message and we'll get back to you as soon as possible.</p>
+            
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="subject" class="form-label">Subject</label>
+                    <input type="text" class="form-control" id="subject" name="subject" required>
+                </div>
+                <div class="mb-3">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="6" required></textarea>
+                </div>
+                {% if 'user_id' not in session %}
+                <div class="alert alert-warning">
+                    You must be logged in to submit a ticket. Please <a href="{{ url_for('login') }}" class="alert-link">login</a>.
+                </div>
+                {% else %}
+                <button type="submit" class="btn btn-primary">Submit Request</button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

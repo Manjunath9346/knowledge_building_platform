@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}My Library{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">My Library</h1>
+
+    <ul class="nav nav-tabs mb-3" id="libraryTab" role="tablist">
+
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="playlists-tab" data-bs-toggle="tab"
+                data-bs-target="#playlists-content" type="button" role="tab">
+                My Playlists
+            </button>
+        </li>
+
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="liked-tab" data-bs-toggle="tab"
+                data-bs-target="#liked-content" type="button" role="tab">
+                Liked
+            </button>
+        </li>
+
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="saved-tab" data-bs-toggle="tab"
+                data-bs-target="#saved-content" type="button" role="tab">
+                Saved
+            </button>
+        </li>
+
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="subscriptions-tab" data-bs-toggle="tab"
+                data-bs-target="#subscriptions-content" type="button" role="tab">
+                Subscriptions
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="libraryTabContent">
+
+        <!-- ================== -->
+        <!-- 1️⃣ USER PLAYLISTS -->
+        <!-- ================== -->
+        <div class="tab-pane fade show active" id="playlists-content" role="tabpanel">
+            <div class="row">
+
+                {% if user_playlists %}
+                    {% for p in user_playlists %}
+                    <div class="col-md-4 mb-4">
+                        <a href="{{ url_for('view_single_playlist', playlist_id=p.id) }}"
+                           class="text-decoration-none">
+                            <div class="card bg-dark text-white shadow p-3">
+                                <h5 class="fw-bold">{{ p.name }}</h5>
+                                <p class="small text-light">{{ p.course_count }} courses</p>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12">
+                        <p>You haven't created any playlists yet.</p>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+        <!-- =============== -->
+        <!-- 2️⃣ LIKED COURSES -->
+        <!-- =============== -->
+        <div class="tab-pane fade" id="liked-content" role="tabpanel">
+            <div class="row">
+                {% if liked_courses %}
+                    {% for course in liked_courses %}
+                    <div class="col-md-4 mb-4">
+                        {% include 'course_card.html' %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>You haven't liked anything yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ================= -->
+        <!-- 3️⃣ WATCH LATER -->
+        <!-- ================= -->
+        <div class="tab-pane fade" id="saved-content" role="tabpanel">
+            <div class="row">
+                {% if watch_later_courses %}
+                    {% for course in watch_later_courses %}
+                    <div class="col-md-4 mb-4">
+                        {% include 'course_card.html' %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>You haven't saved anything yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ===================== -->
+        <!-- 4️⃣ SUBSCRIBED COURSES -->
+        <!-- ===================== -->
+        <div class="tab-pane fade" id="subscriptions-content" role="tabpanel">
+            <div class="row">
+                {% if subscribed_courses %}
+                    {% for course in subscribed_courses %}
+                    <div class="col-md-4 mb-4">
+                        {% include 'course_card.html' %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>You are not subscribed to any creator yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

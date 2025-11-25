@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Admin: Add Question to {{ topic.name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <h2 class="mb-4 text-primary">Add Question to: {{ topic.name }}</h2>
+            <p class="text-muted">Topic Category: {{ topic.category }}</p>
+
+            <div class="card shadow-sm mb-5 glass-card">
+                <div class="card-header bg-dark text-white">New Question Details</div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('admin_add_question', topic_id=topic.id) }}">
+                        <div class="mb-3">
+                            <label for="question_text" class="form-label">Question Text:</label>
+                            <textarea class="form-control" id="question_text" name="question_text" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="question_type" class="form-label">Question Type:</label>
+                            <select class="form-select" id="question_type" name="question_type" required>
+                                <option value="mcq">MCQ (Multiple Choice)</option>
+                                <option value="aptitude">Aptitude (Text Answer)</option>
+                                <option value="coding">Coding (Output/Text Answer)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="code_snippet" class="form-label">Code Snippet (Optional):</label>
+                            <textarea class="form-control" id="code_snippet" name="code_snippet" rows="4" placeholder="Paste any relevant code snippet here."></textarea>
+                        </div>
+
+                        <div id="mcq-options-container" class="border p-3 rounded mb-3">
+                            <h6 class="text-info">MCQ Options <small class="text-muted">(Required for MCQ)</small></h6>
+                            
+                            {% for i in range(1, 5) %}
+                            <div class="input-group mb-2 option-group" data-option-index="{{ i }}">
+                                <div class="input-group-text">
+                                    <input class="form-check-input correct-option-radio" type="radio" name="correct_option" value="{{ i }}" id="correct_option_{{ i }}" required>
+                                </div>
+                                <input type="text" class="form-control" name="option_{{ i }}" placeholder="Option {{ i }} Text" required>
+                            </div>
+                            {% endfor %}
+                            
+                            <div id="dynamic-options-anchor"></div>
+
+                            <button type="button" id="add-option-btn" class="btn btn-sm btn-outline-secondary mt-2">
+                                <i class="fas fa-plus"></i> Add More Option
+                            </button>
+                        </div>
+
+                        <div id="text-answer-container" style="display:none;">
+                            <div class="mb-3">
+                                <label for="correct_answer" class="form-label">Correct Answer/Output:</label>
+                                <textarea class="form-control" id="correct_answer" name="correct_answer" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="explanation" class="form-label">Detailed Explanation (Optional):</label>
+                            <textarea class="form-control" id="explanation" name="explanation" rows="3"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-success mt-3"><i class="fas fa-save"></i> Save Question</button>
+                    </form>
+                </div>
+            </div>
+
+            <hr>
+
+            <h3 class="mt-5">Existing Questions ({{ questions|length }})</h3>
+            <div class="list-group">
+                {% for q in questions %}
+                <div class="list-group-item mb-3 shadow-sm glass-card">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">Q{{ loop.revindex }}: {{ q.question_text[:60] }}...</h5>
+                        <div class="btn-group" role="group">
+                            
+                            <form method="POST" action="{{ url_for('admin_delete_question', question_id=q.id) }}" 
+                                  onsubmit="return confirm('WARNING: Are you sure you want to delete this ENTIRE question? This cannot be undone.');">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i> Delete Question
+                                </button>
+                            </form>
+                            
+                        </div>
+                    </div>
+                    <small class="text-muted">Type: {{ q.question_type.upper() }} | Topic ID: {{ q.topic_id }}</small>
+                    
+                    {% if q.options %}
+                        <ul class="list-unstyled mt-2">
+                            {% for option in q.options %}
+                            <li class="d-flex align-items-center justify-content-between {% if option.id|string == q.correct_answer|string %}text-success fw-bold{% else %}text-white{% endif %}">
+                                <span>- {{ option.option_text }}</span>
+                                
+                                <form method="POST" action="{{ url_for('admin_delete_option', option_id=option.id) }}" onsubmit="return confirm('Delete this option?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger p-1" style="--bs-btn-padding-x: .5rem;">
+                                        &times;
+                                    </button>
+                                </form>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    {% elif q.correct_answer %}
+                        <p class="mt-2 text-warning">Answer: {{ q.correct_answer }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+        <div class="col-lg-4">
+            </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Find the highest initial option number (Starts at 4 due to static fields)
+        var optionCount = 4;
+        const MAX_OPTIONS = 8;
+        
+        // --- Dynamic Option Logic ---
+        function toggleOptionFields() {
+            var type = $('#question_type').val();
+            if (type === 'mcq') {
+                $('#mcq-options-container').show();
+                $('#text-answer-container').hide();
+                // Enable/Require fields based on type
+                $('#text-answer-container textarea').prop('required', false);
+                $('#mcq-options-container input[type="text"]').prop('required', true);
+                $('#mcq-options-container input[type="radio"]').prop('required', true);
+            } else {
+                $('#mcq-options-container').hide();
+                $('#text-answer-container').show();
+                // Enable/Require fields based on type
+                $('#text-answer-container textarea').prop('required', true);
+                $('#mcq-options-container input').prop('required', false); // Disable requirement for MCQ fields
+            }
+        }
+        
+        function addNewOption() {
+            if (optionCount >= MAX_OPTIONS) {
+                alert('Maximum of ' + MAX_OPTIONS + ' options reached.');
+                $('#add-option-btn').prop('disabled', true).text('Max Options Reached');
+                return;
+            }
+            
+            optionCount++;
+            var newOptionHtml = `
+                <div class="input-group mb-2 option-group" data-option-index="${optionCount}">
+                    <div class="input-group-text">
+                        <input class="form-check-input correct-option-radio" type="radio" name="correct_option" value="${optionCount}" id="correct_option_${optionCount}" required>
+                    </div>
+                    <input type="text" class="form-control" name="option_${optionCount}" placeholder="Option ${optionCount} Text" required>
+                    <button type="button" class="btn btn-outline-danger remove-option-btn" data-option-index="${optionCount}">
+                        &times;
+                    </button>
+                </div>
+            `;
+            $('#dynamic-options-anchor').append(newOptionHtml);
+            
+            if (optionCount >= MAX_OPTIONS) {
+                 $('#add-option-btn').prop('disabled', true).text('Max Options Reached');
+            }
+        }
+        
+        // Event listeners
+        $('#question_type').change(toggleOptionFields);
+        $('#add-option-btn').click(addNewOption);
+        
+        // Remove button handler
+        $(document).on('click', '.remove-option-btn', function() {
+            $(this).closest('.option-group').remove();
+            
+            // Re-enable the add button
+            $('#add-option-btn').prop('disabled', false).text('Add More Option');
+        });
+        
+        // Initial setup
+        toggleOptionFields();
+        if (optionCount >= MAX_OPTIONS) {
+            $('#add-option-btn').prop('disabled', true).text('Max Options Reached');
+        }
+    });
+</script>
+{% endblock %}

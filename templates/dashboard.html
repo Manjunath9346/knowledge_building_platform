@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="section-title mb-4 text-white">Creator Dashboard</h2>
+
+<div class="row g-4">
+    <div class="col-lg-3 col-md-6">
+        <div class="glass-card text-center p-4 h-100 border-start border-3 border-info">
+            <i class="fas fa-book fa-3x mb-3 text-info"></i>
+            <h4 class="card-title fw-bold text-white">{{ course_count }}</h4>
+            <p class="card-text text-secondary mb-0">Total Courses Uploaded</p>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="glass-card text-center p-4 h-100 border-start border-3 border-success">
+            <i class="fas fa-users fa-3x mb-3 text-success"></i>
+            <h4 class="card-title fw-bold text-white">{{ subscriber_count }}</h4>
+            <p class="card-text text-secondary mb-0">Total Subscribers</p>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="glass-card text-center p-4 h-100 border-start border-3 border-danger">
+            <i class="fas fa-heart fa-3x mb-3 text-danger"></i>
+            <h4 class="card-title fw-bold text-white">{{ total_likes }}</h4>
+            <p class="card-text text-secondary mb-0">Total Likes Received</p>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="glass-card text-center p-4 h-100 border-start border-3 border-warning">
+            <i class="fas fa-comment fa-3x mb-3 text-warning"></i>
+            <h4 class="card-title fw-bold text-white">{{ total_comments }}</h4>
+            <p class="card-text text-secondary mb-0">Total Comments</p>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="glass-card p-4">
+            <h3 class="section-title mb-4 text-white">Recent Activity</h3>
+            
+            {% if recent_activity %}
+            <ul class="list-group list-group-flush activity-list">
+                {% for activity in recent_activity %}
+                
+                {% set actor_url = url_for('creator_page', username=activity.actor_username) %}
+                
+                <li class="list-group-item glass-item bg-transparent text-white py-3 border-bottom border-secondary-subtle">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="activity-content d-flex align-items-center flex-grow-1">
+                            
+                            {% set icon_class = '' %}
+                            {% set action_text = '' %}
+                            {% set content_url = '#' %}
+
+                            {% if activity.action == 'like' %}
+                                {% set icon_class = 'fas fa-heart text-danger' %}
+                                {% set action_text = 'liked your course' %}
+                                {% set content_url = url_for('course_detail', course_id=activity.content_id) %}
+                            {% elif activity.action == 'comment' %}
+                                {% set icon_class = 'fas fa-comment text-info' %}
+                                {% set action_text = 'commented on your course' %}
+                                {% set content_url = url_for('course_detail', course_id=activity.content_id) %}
+                            {% elif activity.action == 'subscribe' %}
+                                {% set icon_class = 'fas fa-user-plus text-success' %}
+                                {% set action_text = 'subscribed to your channel' %}
+                            {% elif activity.action == 'quiz_attempt' %}
+                                {% set icon_class = 'fas fa-medal text-warning' %}
+                                {% set action_text = 'completed a practice quiz' %}
+                                {% set content_url = url_for('quiz_results', topic_id=activity.content_id) %}
+                            {% endif %}
+                            
+                            <span class="me-3 fs-5"><i class="{{ icon_class }}"></i></span>
+                            
+                            <p class="mb-0">
+                                {% if activity.action == 'quiz_attempt' %}
+                                    <span class="text-white-50">You {{ action_text }} </span>
+                                {% else %}
+                                    <a href="{{ actor_url }}" class="text-info me-1 fw-bold">{{ activity.actor_username }}</a> 
+                                    <span class="text-white-50">{{ action_text }}</span>
+                                {% endif %}
+                                
+                                {% if activity.content_id %}
+                                    <a href="{{ content_url }}" class="text-warning fst-italic">
+                                        "{{ activity.content_title }}"
+                                    </a>
+                                    {% if activity.score_info %}
+                                        <span class="badge bg-warning text-dark ms-2">Score: {{ activity.score_info }}</span>
+                                    {% endif %}
+                                {% endif %}
+                            </p>
+                        </div>
+                        
+                        <span class="text-secondary small">{{ activity.created_at.strftime('%b %d, %Y %H:%M') }}</span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div class="alert alert-info bg-transparent text-secondary border-0 text-center mb-0">
+                No recent activity to display. Start uploading courses to see engagement!
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

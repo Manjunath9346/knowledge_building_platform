@@ -1,0 +1,10 @@
+Flask
+Werkzeug
+pdfminer.six
+python-docx
+mysql-connector-python
+click
+
+# --- NEW DEPENDENCIES ---
+Flask-Mail
+Flask-Dance

@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="form-container-vibrant shadow">
+            <h2 class="mb-4 section-title">Upload Content</h2>
+
+            <form method="POST" enctype="multipart/form-data">
+
+                <!-- Upload Mode -->
+                <div class="mb-3">
+                    <label class="form-label">Upload Type</label>
+                    <select id="upload_mode" name="upload_mode" class="form-select" onchange="toggleUploadMode()" required>
+                        <option value="course">Full Course</option>
+                        <option value="single">Single Content</option>
+                    </select>
+                </div>
+
+                <!-- ===================================================== -->
+                <!-- COURSE UPLOAD FIELDS                                 -->
+                <!-- ===================================================== -->
+                <div id="course-fields">
+
+                    <!-- ⭐ CATEGORY FIELD (NEW) -->
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select name="category" class="form-select">
+                            <option value="Programming">Programming</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Development">Development</option>
+                            <option value="Design">Design</option>
+                            <option value="Business">Business</option>
+                            <option value="Education">Education</option>
+                            <option value="General" selected>General</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Course Title</label>
+                        <input type="text" class="form-control" name="title">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="description" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Thumbnail (Optional)</label>
+                        <input type="file" class="form-control" name="thumbnail" accept="image/jpeg, image/png">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Course File (Optional)</label>
+                        <input type="file" class="form-control" name="file">
+                        <div class="form-text text-secondary">
+                            Allowed: PDF, DOCX, PPTX, TXT, MP4, MP3, JPG, PNG, ZIP
+                        </div>
+                    </div>
+
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="is_paid" name="is_paid">
+                        <label class="form-check-label" for="is_paid">Paid Course?</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Price (USD)</label>
+                        <input type="number" class="form-control" name="price" value="0.00" step="0.01">
+                    </div>
+                </div>
+
+                <!-- ===================================================== -->
+                <!-- SINGLE CONTENT FIELDS                                 -->
+                <!-- ===================================================== -->
+                <div id="single-fields" style="display:none;">
+
+                    <div class="mb-3">
+                        <label class="form-label">Content Title</label>
+                        <input type="text" class="form-control" name="single_title">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Thumbnail (Optional)</label>
+                        <input type="file" class="form-control" name="single_thumbnail" accept="image/jpeg, image/png">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Content Type</label>
+                        <select id="single_content_type" name="single_content_type" class="form-select" onchange="toggleSingleFields()" required>
+                            <option value="">Select Type</option>
+                            <option value="text">Text</option>
+                            <option value="video">Video File</option>
+                            <option value="pdf">PDF / Document</option>
+                        </select>
+                    </div>
+
+                    <!-- File upload -->
+                    <div id="single-file-field" class="mb-3" style="display:none;">
+                        <label class="form-label">Upload File</label>
+                        <input type="file" class="form-control" name="single_file">
+                    </div>
+
+                    <!-- Text content -->
+                    <div id="single-text-field" class="mb-3" style="display:none;">
+                        <label class="form-label">Text Content</label>
+                        <textarea class="form-control" name="single_text" rows="5"></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mt-3">Upload</button>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleUploadMode() {
+    let mode = document.getElementById("upload_mode").value;
+
+    document.getElementById("course-fields").style.display =
+        mode === "course" ? "block" : "none";
+
+    document.getElementById("single-fields").style.display =
+        mode === "single" ? "block" : "none";
+}
+
+function toggleSingleFields() {
+    let type = document.getElementById("single_content_type").value;
+
+    document.getElementById("single-file-field").style.display =
+        (type === "video" || type === "pdf") ? "block" : "none";
+
+    document.getElementById("single-text-field").style.display =
+        type === "text" ? "block" : "none";
+}
+</script>
+
+{% endblock %}

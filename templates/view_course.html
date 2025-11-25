@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="glass-card p-4">
+    <h2 class="section-title mb-3">Viewing: {{ course.title }}</h2>
+    <p class="text-secondary mb-4">{{ course.description }}</p>
+
+    <div class="course-viewer position-relative" 
+         style="width: 100%; height: 700px; background-color: #1a1a2e; overflow: hidden;">
+
+        {% if course.filetype in ['mp4', 'mp3', 'wav'] %}
+            <video controls class="w-100 h-100" style="object-fit: contain; border: none;">
+                <source src="{{ url_for('media', filename=course.filename) }}" 
+                        type="{{ 'video/mp4' if course.filetype == 'mp4' else 'audio/' + course.filetype }}">
+                Your browser does not support the {{ course.filetype }} tag.
+            </video>
+
+        {% elif course.filetype == 'pdf' %}
+            <embed src="{{ url_for('media', filename=course.filename) }}" 
+                   type="application/pdf" 
+                   style="width: 100%; height: 100%; border: none;"/>
+
+        {% elif course.filetype in ['jpg', 'jpeg', 'png'] %}
+            <img src="{{ url_for('media', filename=course.filename) }}" 
+                 alt="{{ course.title }}" 
+                 class="img-fluid w-100 h-100" 
+                 style="object-fit: contain; border: none;"/>
+
+        {% else %}
+            <div class="text-center p-5 w-100 h-100 d-flex flex-column justify-content-center">
+                <p class="text-warning">File type ({{ course.filetype | upper }}) is not directly streamable or viewable in the browser.</p>
+                <a href="{{ url_for('download_course', course_id=course.id) }}" class="btn btn-primary mt-3">
+                    <i class="fas fa-download me-2"></i> Download {{ course.filetype | upper }} File
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mt-4 d-flex justify-content-between">
+        <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-vibrant-secondary">Back to Details</a>
+        <a href="{{ url_for('download_course', course_id=course.id) }}" class="btn btn-success">
+            <i class="fas fa-download me-2"></i> Download Course
+        </a>
+    </div>
+</div>
+{% endblock %}

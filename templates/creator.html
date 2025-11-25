@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="section-title mb-4">Creator Profile: {{ creator.username }}</h2>
+
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <div class="glass-card mb-4 p-4 text-center">
+            <i class="fas fa-user-circle fa-4x mb-3" style="background: linear-gradient(135deg, #4facfe, #00f2fe); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            <h3 class="section-title">{{ creator.username }}</h3>
+            <p class="text-secondary">{{ creator.fullname }}</p>
+            
+            {% if session.get('user_id') and creator.id != session['user_id'] %}
+                {% if creator.id in subscribed_ids %}
+                    <form action="{{ url_for('unsubscribe', creator_id=creator.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger mt-3">Unsubscribe</button>
+                    </form>
+                {% else %}
+                    <form action="{{ url_for('subscribe', creator_id=creator.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-primary mt-3">Subscribe</button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="col-lg-8 mb-4">
+        <div class="glass-card p-4">
+            <h3 class="section-title mb-4">{{ creator.username }}'s Courses ({{ courses|length }})</h3>
+            <div class="row">
+                {% for course in courses %}
+                <div class="col-md-6 mb-4">
+                    {% include 'course_card.html' %}
+                </div>
+                {% else %}
+                <p class="text-secondary">This creator has not uploaded any courses yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

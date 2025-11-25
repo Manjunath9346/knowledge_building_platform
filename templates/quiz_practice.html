@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Practice Center{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-primary mb-4">Practice Quiz Center</h1>
+    <p class="text-muted">Select a topic to start a paginated, timed quiz session.</p>
+
+    {% if topics %}
+    <div class="row">
+        {% for topic in topics %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card shadow-sm h-100 glass-card">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-white">{{ topic.name }}</h5>
+                    <span class="badge bg-info mb-2 align-self-start">{{ topic.category | upper }}</span>
+                    <p class="card-text text-white-50">{{ topic.description | default('A set of practice questions.', true) }}</p>
+                    <div class="mt-auto pt-3 border-top border-secondary-subtle">
+                        <p class="text-white fw-bold mb-2">{{ topic.question_count }} Questions</p>
+                        <a href="{{ url_for('practice_topic_detail', topic_id=topic.id) }}" class="btn btn-vibrant w-100">
+                            <i class="fas fa-play"></i> Start Quiz
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info glass-card text-white-50">
+        No active quiz topics are currently available.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

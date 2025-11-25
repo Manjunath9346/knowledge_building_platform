@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    /* Force 3 cards per row */
+    @media (min-width: 768px) {
+        .col-md-4 {
+            flex: 0 0 auto;
+            width: 33.333333%;
+            max-width: 33.333333%;
+        }
+    }
+
+    /* Slightly increase height of only the six cards */
+    .row .glass-card.sheen-effect {
+        min-height: 220px; /* tiny increase */
+        transition: all 0.3s ease;
+    }
+</style>
+
+<div class="glass-card sheen-effect py-5 text-center mb-5 animate__animated animate__fadeIn">
+    <h1 class="fw-bold section-title text-light">Learn Without Limits</h1>
+    <p class="lead text-secondary text-center text-light"> Push your limits. Master new skills. Become the best version of yourself. Stay consistent — success will follow.</p>
+    <a href="{{ url_for('explore') }}" class="btn btn-vibrant btn-lg mt-3">Explore Courses</a>
+</div>
+
+<!-- Unified Grid (3 per row × 2 rows total) -->
+<div class="row text-center g-4 d-flex align-items-stretch">
+    <!-- Card 1 -->
+    <div class="col-md-4">
+        <div class="glass-card sheen-effect p-3 h-100 d-flex flex-column">
+            <i class="fas fa-upload fa-2x mb-2 text-white"></i>
+            <h5>Upload Courses</h5>
+            <p class="text-secondary mb-0">
+                Share your knowledge in any format: PDFs, videos, audios, documents, and more.
+            </p>
+        </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="col-md-4">
+        <div class="glass-card sheen-effect p-3 h-100 d-flex flex-column">
+            <i class="fas fa-users fa-2x mb-2 text-white"></i>
+            <h5>Collaborate & Learn</h5>
+            <p class="text-secondary mb-0">
+                Students and faculty can explore, view, and download each other’s courses easily.
+            </p>
+        </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="col-md-4">
+        <div class="glass-card sheen-effect p-3 h-100 d-flex flex-column">
+            <i class="fas fa-graduation-cap fa-2x mb-2 text-white"></i>
+            <h5>Flexible Learning</h5>
+            <p class="text-secondary mb-0">
+                Learn at your own pace, anytime and anywhere within the institution’s network.
+            </p>
+        </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="col-md-4">
+        <div class="glass-card sheen-effect p-3 h-100 d-flex flex-column">
+            <i class="fas fa-chart-line fa-2x mb-2 text-white"></i>
+            <h5>Track Progress</h5>
+            <p class="text-secondary mb-0">
+                Monitor your course completion and learning progress with easy-to-read analytics.
+            </p>
+        </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="col-md-4">
+        <div class="glass-card sheen-effect p-3 h-100 d-flex flex-column">
+            <i class="fas fa-rocket fa-2x mb-2 text-white"></i>
+            <h5>Fast and Efficient</h5>
+            <p class="text-secondary mb-0">
+                Our platform is optimized for speed, ensuring a seamless experience on any device.
+            </p>
+        </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="col-md-4">
+        <div class="glass-card sheen-effect p-3 h-100 d-flex flex-column">
+            <i class="fas fa-star fa-2x mb-2 text-white"></i>
+            <h5>Top-Rated Content</h5>
+            <p class="text-secondary mb-0">
+                Discover the most liked and highly rated courses by learners.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

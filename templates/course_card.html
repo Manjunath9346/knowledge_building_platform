@@ -1,0 +1,52 @@
+<div class="glass-card sheen-effect h-100">
+
+    {% if course.thumbnail_filename %}
+    <img src="{{ url_for('media', filename=course.thumbnail_filename) }}" 
+         class="card-img-top" alt="{{ course.title }} Thumbnail">
+    {% else %}
+    <div class="d-flex justify-content-center align-items-center"
+         style="height:180px; background:rgba(255,255,255,0.05); border-radius:10px;">
+        <i class="fas fa-file-alt text-white-50" style="font-size:60px;"></i>
+    </div>
+    {% endif %}
+
+    <div class="card-body">
+
+        {# detect single content based on no sections #}
+        {% set is_single = course.section_count == 0 %}
+
+        {% if is_single %}
+            <span class="badge bg-info mb-2">Single Content</span>
+        {% else %}
+            <span class="badge bg-primary mb-2">Course</span>
+        {% endif %}
+
+        <h5 class="card-title text-truncate text-white">{{ course.title }}</h5>
+
+        {% if course.description %}
+        <p class="card-text text-truncate text-white-50">{{ course.description }}</p>
+        {% else %}
+        <p class="text-white-50 text-truncate"><i>No description</i></p>
+        {% endif %}
+
+        <p class="card-text">
+            <small class="text-white">By:
+                <a href="{{ url_for('creator_page', username=course.uploader) }}" class="text-info">
+                    {{ course.uploader }}
+                </a>
+            </small>
+        </p>
+
+        {% if course.is_paid %}
+            <span class="badge bg-warning">Paid: ₹{{ course.price }}</span>
+        {% else %}
+            <span class="badge bg-success">Free</span>
+        {% endif %}
+
+        <a href="{{ url_for('course_detail', course_id=course.id) }}"
+           class="btn btn-primary mt-3 w-100">
+           {% if is_single %}View Content{% else %}View Course{% endif %}
+        </a>
+
+    </div>
+</div>

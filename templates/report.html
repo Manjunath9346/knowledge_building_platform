@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Report {{ course.title }}{% endblock %}
+
+{% block content %}
+<style>
+    /* Reuse glass card styling */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    }
+    .glass-textarea {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        color: #fff;
+        padding: 0.8rem 1rem;
+        width: 100%;
+        resize: vertical;
+    }
+    .btn-vibrant-danger {
+        background: linear-gradient(135deg, #dc3545, #8a2be2);
+        border: none;
+        color: #fff;
+        font-weight: bold;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="glass-card">
+                <h2 class="text-danger mb-4">Report Course: {{ course.title }}</h2>
+                <p class="text-white-50 mb-4">You are reporting this course for inappropriate content or a violation of our policies. Your submission is confidential and will be reviewed by an administrator.</p>
+
+                <form action="{{ url_for('report_course', course_id=course.id) }}" method="post">
+                    <div class="mb-4">
+                        <label for="reasonTextarea" class="form-label text-white">Reason for Reporting</label>
+                        <textarea id="reasonTextarea" class="glass-textarea" name="reason" required rows="5" placeholder="Please provide a detailed reason..."></textarea>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-vibrant-danger">
+                            <i class="fas fa-flag me-2"></i>Submit Official Report
+                        </button>
+                        <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-outline-secondary">Cancel and Go Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

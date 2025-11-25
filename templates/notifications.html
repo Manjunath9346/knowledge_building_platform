@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <h2 class="section-title mb-4">Notifications</h2>
+        
+        <div class="glass-card p-4">
+            <ul class="list-group list-group-flush">
+                {% for notification in notifications %}
+                <li class="list-group-item bg-transparent border-bottom border-secondary-subtle py-3">
+                    <div class="d-flex w-100 justify-content-between">
+                        <a href="{{ notification.url }}" class="text-white text-decoration-none">
+                            {% set actor = '<strong class="text-info">' + notification.actor_username + '</strong>' %}
+                            {% set course_link = '<strong class="text-warning">"' + notification.course_title + '"</strong>' if notification.course_title else '' %}
+                            
+                            {% if notification.action == 'like' %}
+                                <i class="fas fa-heart text-danger me-2"></i> {{ actor | safe }} liked your course {{ course_link | safe }}
+                            {% elif notification.action == 'comment' %}
+                                <i class="fas fa-comment text-info me-2"></i> {{ actor | safe }} commented on your course {{ course_link | safe }}
+                            {% elif notification.action == 'subscribe' %}
+                                <i class="fas fa-user-plus text-success me-2"></i> {{ actor | safe }} subscribed to your channel.
+                            {% elif notification.action == 'report' %}
+                                <i class="fas fa-flag text-danger me-2"></i> {{ actor | safe }} reported course {{ course_link | safe }}. (Admin action required)
+                            {% elif notification.action == 'help_ticket' %}
+                                <i class="fas fa-headset text-warning me-2"></i> {{ actor | safe }} submitted a new help ticket. (Admin action required)
+                            {% else %}
+                                {{ notification.action }}
+                            {% endif %}
+                        </a>
+                        <small class="text-secondary">{{ notification.created_at.strftime('%b %d, %Y %H:%M') }}</small>
+                    </div>
+                </li>
+                {% else %}
+                <li class="list-group-item bg-transparent text-secondary">No new notifications.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

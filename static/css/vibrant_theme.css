@@ -1,0 +1,1136 @@
+/* --- VisionTube Inspired Dark Glass Theme --- */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --dark-bg: #0a0a12;
+    --darker-bg: #050508;
+    --surface: #1a1a2e;
+    --surface-hover: #252542;
+    --text-primary: #ffffff;
+    --text-secondary: #b8b8d6;
+    --text-accent: #8a63d2;
+    --border-glow: rgba(102, 126, 234, 0.4);
+    --success: #00d4aa;
+    --warning: #ffb74d;
+    --danger: #ff6b6b;
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    position: relative;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Animated Aurora Background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(247, 37, 133, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(0, 245, 160, 0.08) 0%, transparent 50%);
+    background-size: 200% 200%;
+    animation: aurora-flow 20s ease infinite;
+    z-index: -2;
+    filter: blur(80px);
+}
+
+@keyframes aurora-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Floating Elements */
+.floating-elements {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.floating-element {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    opacity: 0.08;
+    animation: float 25s infinite linear;
+}
+
+.floating-element:nth-child(1) {
+    width: 300px;
+    height: 300px;
+    top: 10%;
+    left: 5%;
+    animation-delay: 0s;
+}
+
+.floating-element:nth-child(2) {
+    width: 200px;
+    height: 200px;
+    top: 60%;
+    right: 10%;
+    background: var(--secondary-gradient);
+    animation-delay: -8s;
+}
+
+.floating-element:nth-child(3) {
+    width: 150px;
+    height: 150px;
+    bottom: 20%;
+    left: 20%;
+    background: var(--accent-gradient);
+    animation-delay: -15s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-40px) rotate(120deg); }
+    66% { transform: translateY(40px) rotate(240deg); }
+}
+
+/* --- Enhanced Glass Navigation --- */
+.vibrant-nav {
+    background: rgba(26, 26, 46, 0.85) !important;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    padding: 12px 0;
+}
+
+.vibrant-nav .navbar-brand {
+    font-weight: 800;
+    font-size: 1.5rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+}
+
+.vibrant-nav .nav-link {
+    color: var(--text-secondary) !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 8px 16px !important;
+    border-radius: 8px;
+}
+
+.vibrant-nav .nav-link:hover,
+.vibrant-nav .nav-link.active {
+    color: var(--text-primary) !important;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Search Bar */
+.navbar-search {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid transparent;
+    border-radius: 50px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+}
+
+.navbar-search:focus {
+    border-color: var(--border-glow);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 25px rgba(102, 126, 234, 0.25);
+}
+
+.navbar-search::placeholder {
+    color: var(--text-secondary);
+}
+
+/* --- Enhanced Glass Cards --- */
+.glass-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    position: relative;
+}
+
+.glass-card:hover {
+    transform: translateY(-12px);
+    border-color: var(--border-glow);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border-glow);
+}
+
+.glass-card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.glass-card:hover .card-img-top {
+    transform: scale(1.08);
+}
+
+.glass-card .card-body {
+    color: var(--text-primary);
+    padding: 1.5rem;
+}
+
+.glass-card .card-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, #fff 0%, var(--text-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.glass-card .card-text {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* --- Enhanced Sheen Effect --- */
+.sheen-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.sheen-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.8s ease;
+    z-index: 1;
+}
+
+.sheen-effect:hover::before {
+    left: 100%;
+}
+
+/* Gradient Border Effect */
+.glass-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--primary-gradient);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+}
+
+.glass-card:hover::after {
+    transform: scaleX(1);
+}
+
+/* --- Enhanced Buttons --- */
+.btn-vibrant {
+    background: var(--primary-gradient);
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 12px 28px;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-vibrant:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+    color: white;
+}
+
+.btn-vibrant::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-vibrant:hover::before {
+    left: 100%;
+}
+
+/* Secondary Button */
+.btn-vibrant-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 12px 28px;
+    transition: all 0.3s ease;
+}
+
+.btn-vibrant-secondary:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+    color: var(--text-primary);
+}
+
+/* --- Enhanced Form Container --- */
+.form-container-vibrant {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(25px);
+    border-radius: 20px;
+    padding: 2.5rem;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.form-container-vibrant:hover {
+    transform: translateY(-5px);
+}
+
+.form-container-vibrant .form-control {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+}
+
+.form-container-vibrant .form-control:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--border-glow);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    color: var(--text-primary);
+}
+
+.form-container-vibrant .form-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* --- Additional Components --- */
+
+/* Section Headers */
+.section-header {
+    border-bottom: 2px solid;
+    border-image: var(--primary-gradient);
+    border-image-slice: 1;
+    padding-bottom: 0.75rem;
+    margin-bottom: 2rem;
+    display: inline-block;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 800;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Notification Badge */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 12px;
+    height: 12px;
+    background: var(--danger);
+    border-radius: 50%;
+    border: 2px solid var(--surface);
+}
+
+/* User Avatar */
+.user-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--secondary-gradient);
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.user-avatar:hover {
+    border-color: var(--border-glow);
+    transform: scale(1.05);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-gradient);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-gradient);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .glass-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .form-container-vibrant {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .vibrant-nav .navbar-brand {
+        font-size: 1.3rem;
+    }
+}
+/* Add this to the end of mini_coursera_phase1_v2/static/css/vibrant_theme.css */
+
+/* --- FIX: Force 3-Column Grid Alignment (overrides conflicts) --- */
+@media (min-width: 768px) {
+    /* Targets any element with col-md-4 to ensure 1/3 width */
+    .col-md-4 {
+        flex: 0 0 auto !important; /* Force no shrinking/growing */
+        width: 33.333333% !important; /* Force exactly 1/3 width */
+        max-width: 33.333333% !important; /* Force max width */
+    }
+}
+/* Add this to the end of mini_coursera_phase1_v2/static/css/vibrant_theme.css */
+
+/* --- Refactored Button Styles for ALL buttons to be vibrant --- */
+
+/* Base style for all buttons: set standard shape, transition, and animation core */
+.btn {
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 12px 28px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: none !important; /* Remove default borders */
+    color: white !important; /* Ensure text is white for dark backgrounds */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Add subtle text shadow */
+}
+
+/* Hover lift effect for all buttons */
+.btn:hover {
+    transform: translateY(-3px);
+    color: white !important;
+}
+
+/* Sheen effect for all buttons on hover */
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+    z-index: 1;
+}
+
+/* Trigger sheen on hover */
+.btn:hover::before {
+    left: 100%;
+}
+
+/* PRIMARY / .btn-vibrant: Use the main vibrant gradient */
+.btn-primary, .btn-vibrant {
+    background: var(--primary-gradient);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:hover, .btn-vibrant:hover {
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+}
+
+/* SUCCESS: Use a vibrant green/teal gradient */
+.btn-success {
+    background: linear-gradient(135deg, var(--success) 0%, #00a886 100%);
+    box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4);
+}
+
+.btn-success:hover {
+    box-shadow: 0 10px 30px rgba(0, 212, 170, 0.6);
+}
+
+/* DANGER: Use a vibrant red/pink gradient */
+.btn-danger {
+    background: var(--secondary-gradient);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.btn-danger:hover {
+    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.6);
+}
+
+/* SECONDARY/INFO/WARNING: Use the "glass" button style instead of a full gradient */
+.btn-info, .btn-warning, .btn-secondary, .btn-light, .btn-dark, .btn-outline-light {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text-primary) !important;
+    box-shadow: none !important;
+}
+
+.btn-info:hover, .btn-warning:hover, .btn-secondary:hover, .btn-light:hover, .btn-dark:hover, .btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    transform: translateY(-2px) !important; /* Slightly less lift */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Remove sheen from the glass-style buttons as it doesn't fit the aesthetic */
+.btn-info::before, .btn-warning::before, .btn-secondary::before, .btn-light::before, .btn-dark::before, .btn-outline-light::before {
+    content: none !important;
+}
+/* --- VisionTube Inspired Dark Glass Theme --- */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --dark-bg: #0a0a12;
+    --darker-bg: #050508;
+    --surface: #1a1a2e;
+    --surface-hover: #252542;
+    --text-primary: #ffffff;
+    --text-secondary: #b8b8d6;
+    --text-accent: #8a63d2;
+    --border-glow: rgba(102, 126, 234, 0.4);
+    --success: #00d4aa;
+    --warning: #ffb74d;
+    --danger: #ff6b6b;
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    background-color: var(--dark-bg);
+    color: var(--text-primary);
+    position: relative;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Animated Aurora Background */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(247, 37, 133, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(0, 245, 160, 0.08) 0%, transparent 50%);
+    background-size: 200% 200%;
+    animation: aurora-flow 20s ease infinite;
+    z-index: -2;
+    filter: blur(80px);
+}
+
+@keyframes aurora-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Floating Elements */
+.floating-elements {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.floating-element {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    opacity: 0.08;
+    animation: float 25s infinite linear;
+}
+
+.floating-element:nth-child(1) {
+    width: 300px;
+    height: 300px;
+    top: 10%;
+    left: 5%;
+    animation-delay: 0s;
+}
+
+.floating-element:nth-child(2) {
+    width: 200px;
+    height: 200px;
+    top: 60%;
+    right: 10%;
+    background: var(--secondary-gradient);
+    animation-delay: -8s;
+}
+
+.floating-element:nth-child(3) {
+    width: 150px;
+    height: 150px;
+    bottom: 20%;
+    left: 20%;
+    background: var(--accent-gradient);
+    animation-delay: -15s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-40px) rotate(120deg); }
+    66% { transform: translateY(40px) rotate(240deg); }
+}
+
+/* --- Enhanced Glass Navigation --- */
+.vibrant-nav {
+    background: rgba(26, 26, 46, 0.85) !important;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    padding: 12px 0;
+}
+
+.vibrant-nav .navbar-brand {
+    font-weight: 800;
+    font-size: 1.5rem;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+}
+
+.vibrant-nav .nav-link {
+    color: var(--text-secondary) !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 8px 16px !important;
+    border-radius: 8px;
+}
+
+.vibrant-nav .nav-link:hover,
+.vibrant-nav .nav-link.active {
+    color: var(--text-primary) !important;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Search Bar */
+.navbar-search {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid transparent;
+    border-radius: 50px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+}
+
+.navbar-search:focus {
+    border-color: var(--border-glow);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 25px rgba(102, 126, 234, 0.25);
+}
+
+.navbar-search::placeholder {
+    color: var(--text-secondary);
+}
+
+/* --- Enhanced Glass Cards --- */
+.glass-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    position: relative;
+}
+
+.glass-card:hover {
+    transform: translateY(-12px);
+    border-color: var(--border-glow);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--border-glow);
+}
+
+.glass-card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.glass-card:hover .card-img-top {
+    transform: scale(1.08);
+}
+
+.glass-card .card-body {
+    color: var(--text-primary);
+    padding: 1.5rem;
+}
+
+.glass-card .card-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, #fff 0%, var(--text-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.glass-card .card-text {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* --- Enhanced Sheen Effect --- */
+.sheen-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.sheen-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.8s ease;
+    z-index: 1;
+}
+
+.sheen-effect:hover::before {
+    left: 100%;
+}
+
+/* Gradient Border Effect */
+.glass-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--primary-gradient);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+}
+
+.glass-card:hover::after {
+    transform: scaleX(1);
+}
+
+/* --- Enhanced Buttons (DEPRECATED: Now handled by .btn override below) --- */
+/*
+.btn-vibrant { ... }
+.btn-vibrant:hover { ... }
+.btn-vibrant::before { ... }
+.btn-vibrant:hover::before { ... }
+.btn-vibrant-secondary { ... }
+.btn-vibrant-secondary:hover { ... }
+*/
+
+/* --- Enhanced Form Container --- */
+.form-container-vibrant {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(25px);
+    border-radius: 20px;
+    padding: 2.5rem;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.form-container-vibrant:hover {
+    transform: translateY(-5px);
+}
+
+.form-container-vibrant .form-control {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+}
+
+.form-container-vibrant .form-control:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--border-glow);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    color: var(--text-primary);
+}
+
+.form-container-vibrant .form-label {
+    color: var(--text-secondary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* --- Additional Components --- */
+
+/* Section Headers */
+.section-header {
+    border-bottom: 2px solid;
+    border-image: var(--primary-gradient);
+    border-image-slice: 1;
+    padding-bottom: 0.75rem;
+    margin-bottom: 2rem;
+    display: inline-block;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 800;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Notification Badge */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 12px;
+    height: 12px;
+    background: var(--danger);
+    border-radius: 50%;
+    border: 2px solid var(--surface);
+}
+
+/* User Avatar */
+.user-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--secondary-gradient);
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.user-avatar:hover {
+    border-color: var(--border-glow);
+    transform: scale(1.05);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-gradient);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-gradient);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .glass-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .form-container-vibrant {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .vibrant-nav .navbar-brand {
+        font-size: 1.3rem;
+    }
+}
+/* Add this to the end of mini_coursera_phase1_v2/static/css/vibrant_theme.css */
+
+/* --- FIX: Force 3-Column Grid Alignment (overrides conflicts) --- */
+@media (min-width: 768px) {
+    /* Targets any element with col-md-4 to ensure 1/3 width */
+    .col-md-4 {
+        flex: 0 0 auto !important; /* Force no shrinking/growing */
+        width: 33.333333% !important; /* Force exactly 1/3 width */
+        max-width: 33.333333% !important; /* Force max width */
+    }
+}
+
+/* --- Refactored Button Styles for ALL buttons to be vibrant --- */
+
+/* Base style for all buttons: set standard shape, transition, and animation core */
+.btn {
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 12px 28px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: none !important; /* Remove default borders */
+    color: white !important; /* Ensure text is white for dark backgrounds */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Add subtle text shadow */
+}
+
+/* Hover lift effect for all buttons */
+.btn:hover {
+    transform: translateY(-3px);
+    color: white !important;
+}
+
+/* Sheen effect for all buttons on hover */
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+    z-index: 1;
+}
+
+/* Trigger sheen on hover */
+.btn:hover::before {
+    left: 100%;
+}
+
+/* PRIMARY / .btn-vibrant: Use the main vibrant gradient */
+.btn-primary, .btn-vibrant {
+    background: var(--primary-gradient);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:hover, .btn-vibrant:hover {
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+}
+
+/* SUCCESS: Use a vibrant green/teal gradient */
+.btn-success {
+    background: linear-gradient(135deg, var(--success) 0%, #00a886 100%);
+    box-shadow: 0 6px 20px rgba(0, 212, 170, 0.4);
+}
+
+.btn-success:hover {
+    box-shadow: 0 10px 30px rgba(0, 212, 170, 0.6);
+}
+
+/* DANGER: Use a vibrant red/pink gradient */
+.btn-danger {
+    background: var(--secondary-gradient);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.btn-danger:hover {
+    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.6);
+}
+
+/* SECONDARY/INFO/WARNING: Use the "glass" button style instead of a full gradient */
+.btn-info, .btn-warning, .btn-secondary, .btn-light, .btn-dark, .btn-outline-light, .btn-vibrant-secondary {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text-primary) !important;
+    box-shadow: none !important;
+}
+
+.btn-info:hover, .btn-warning:hover, .btn-secondary:hover, .btn-light:hover, .btn-dark:hover, .btn-outline-light:hover, .btn-vibrant-secondary:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    transform: translateY(-2px) !important; /* Slightly less lift */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Remove sheen from the glass-style buttons as it doesn't fit the aesthetic */
+.btn-info::before, .btn-warning::before, .btn-secondary::before, .btn-light::before, .btn-dark::before, .btn-outline-light::before, .btn-vibrant-secondary::before {
+    content: none !important;
+}
+/* Example CSS to define the glowing effect for the active link in the navigation bar */
+.vibrant-nav-active-glow {
+    /* Base style for the highlight */
+    background-color: rgba(255, 255, 255, 0.15) !important; 
+    border-radius: 6px; 
+    padding: 8px 12px !important; 
+    
+    /* Glowing effect */
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.8), 0 0 20px rgba(138, 43, 226, 0.4); 
+    
+    /* Ensure text remains visible */
+    color: white !important;
+    font-weight: bold;
+}
+/* === VisionTube Dark Glass Theme === */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-dark: #0b0c10;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --accent: #6c63ff;
+  --accent-glow: 0 0 20px rgba(108, 99, 255, 0.6);
+  --text-light: #e4e4e4;
+  --border-glow: 0 0 10px rgba(255,255,255,0.15);
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-light);
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+  transition: all 0.4s ease-in-out;
+}
+
+/* --- Cards --- */
+.card {
+  background: var(--card-bg);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  box-shadow: var(--border-glow);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 25px rgba(108,99,255,0.6);
+}
+
+/* --- Buttons --- */
+.btn-glow {
+  background: var(--accent);
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 10px 18px;
+  transition: all 0.3s ease;
+  box-shadow: var(--accent-glow);
+}
+.btn-glow:hover {
+  background: #857dff;
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(108,99,255,0.8);
+}
+
+/* --- Navbar --- */
+.navbar {
+  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  transition: 0.3s ease;
+}
+.navbar a {
+  color: var(--text-light) !important;
+}
+.navbar a:hover {
+  color: var(--accent) !important;
+  text-shadow: 0 0 10px var(--accent);
+}
+
+/* --- Scrollbar --- */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 4px;
+}
+/* FORCE MODAL ABOVE EVERYTHING IN THE THEME */
+.modal-backdrop {
+    z-index: 200000 !important;
+}
+
+.modal {
+    z-index: 200001 !important;
+}
+
+.modal-dialog {
+    z-index: 200002 !important;
+}
+
+.modal-content {
+    z-index: 200003 !important;
+    pointer-events: auto !important;
+}
+/* REAL FIX — BOOST MODAL ABOVE NAVBAR & THEME LAYERS */
+.modal {
+    z-index: 999999 !important;
+}
+
+.modal-backdrop {
+    z-index: 999998 !important;
+}
+
+/* Keep modal clickable */
+.modal-dialog,
+.modal-content {
+    position: relative !important;
+    z-index: 1000000 !important;
+}

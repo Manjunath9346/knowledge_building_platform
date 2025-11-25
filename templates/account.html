@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="section-title mb-4">Account Management</h2>
+
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <div class="glass-card h-100">
+            <div class="card-body">
+                <h5 class="card-title section-title">User Profile</h5>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Full Name:</strong> {{ user.fullname }}</p>
+                <p><strong>Role:</strong> <span class="badge bg-primary">{{ user.role }}</span></p>
+                <p><strong>Joined:</strong> {{ user.created_at.strftime('%Y-%m-%d') }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8 mb-4">
+        <div class="glass-card p-4 h-100">
+            <h5 class="section-title mb-3">Update Account Info</h5>
+            <form method="POST" action="{{ url_for('account') }}">
+                <div class="mb-3">
+                    <label for="fullname" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="fullname" name="fullname" value="{{ user.fullname or '' }}">
+                </div>
+                <h6 class="mt-4 mb-3">Change Password</h6>
+                <div class="mb-3">
+                    <label for="current_password" class="form-label">Current Password (Required for change)</label>
+                    <input type="password" class="form-control" id="current_password" name="current_password">
+                </div>
+                <div class="mb-3">
+                    <label for="new_password" class="form-label">New Password</label>
+                    <input type="password" class="form-control" id="new_password" name="new_password">
+                </div>
+                <button type="submit" class="btn btn-primary">Update Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="glass-card mt-4">
+    <div class="card-header bg-transparent border-0">
+        <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="uploads-tab" data-bs-toggle="tab" data-bs-target="#uploads" type="button" role="tab" aria-controls="uploads" aria-selected="true">My Uploads ({{ uploads|length }})</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="subscriptions-tab" data-bs-toggle="tab" data-bs-target="#subscriptions" type="button" role="tab" aria-controls="subscriptions" aria-selected="false">My Subscriptions ({{ subs|length }})</button>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="uploads" role="tabpanel" aria-labelledby="uploads-tab">
+                <div class="row">
+                    {% for course in uploads %}
+                    <div class="col-md-4 mb-4">
+                        <div class="glass-card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title text-truncate">{{ course.title }}</h5>
+                                <p class="card-text"><small class="text-muted">Uploaded: {{ course.created_at.strftime('%Y-%m-%d') }}</small></p>
+                                <a href="{{ url_for('course_detail', course_id=course.id) }}" class="btn btn-sm btn-primary">View</a>
+                                <a href="{{ url_for('edit_course', course_id=course.id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                <form action="{{ url_for('delete_course', course_id=course.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this course?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-secondary">You haven't uploaded any courses yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="tab-pane fade" id="subscriptions" role="tabpanel" aria-labelledby="subscriptions-tab">
+                {% for creator in subs %}
+                <div class="glass-card mb-3 p-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ creator.username }}</strong>
+                        <small class="text-muted d-block">{{ creator.fullname }}</small>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('creator_page', username=creator.username) }}" class="btn btn-sm btn-primary">View Profile</a>
+                        <form action="{{ url_for('unsubscribe', creator_id=creator.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Unsubscribe</button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-secondary">You are not subscribed to any creators.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

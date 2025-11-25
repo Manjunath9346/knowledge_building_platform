@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz: {{ topic.name }} - Page {{ current_page }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8">
+
+            <p class="text-muted">{{ topic.description }}</p>
+
+            <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light-dark rounded text-white-50">
+                <span>Page {{ current_page }} of {{ total_pages }} ({{ total_questions }} Total Questions)</span>
+                <span id="quiz-timer" class="fw-bold fs-5 text-info">Timer: 00:00</span>
+            </div>
+
+            {% if not questions %}
+                <div class="alert alert-warning">No questions found for this quiz or page is out of bounds.</div>
+            {% else %}
+                <form method="POST" action="{{ url_for('quiz_view', topic_id=topic.id, page=current_page) }}">
+
+                    {% for q in questions %}
+                    {% set question_number = questions_per_page * (current_page - 1) + loop.index %}
+
+                    <div class="glass-card p-4 mb-4">
+                        <h5 class="text-white mb-3">Question {{ question_number }}: ({{ q.question_type | upper }})</h5>
+                        <p class="text-white">{{ q.question_text }}</p>
+
+                        {% if q.code_snippet %}
+                        <pre class="bg-dark text-info p-3 rounded-3 my-3"><code>{{ q.code_snippet }}</code></pre>
+                        {% endif %}
+
+                        {% if q.question_type == 'mcq' %}
+                            {% for option in q.options %}
+                            <div class="form-check text-secondary mb-2">
+                                <input class="form-check-input" type="radio"
+                                       name="answer_{{ q.id }}"
+                                       id="option_{{ option.id }}"
+                                       value="{{ option.id }}"
+                                       {% if q.user_answer and q.user_answer|string == option.id|string %}checked{% endif %}
+                                       required>
+
+                                <label class="form-check-label text-white-50" for="option_{{ option.id }}">
+                                    {{ option.option_text }}
+                                </label>
+                            </div>
+                            {% endfor %}
+
+                        {% elif q.question_type in ['coding', 'aptitude'] %}
+                        <div class="form-group mt-3">
+                            <label class="form-label text-info">Your Answer:</label>
+                            <textarea class="form-control" 
+                                      name="answer_{{ q.id }}" 
+                                      rows="3"
+                                      placeholder="Enter your answer or code output here...">
+                                      {% if q.user_answer %}{{ q.user_answer }}{% endif %}
+                            </textarea>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% endfor %}
+
+                    <nav aria-label="Quiz Navigation">
+                        <ul class="pagination justify-content-between">
+
+                            <li class="page-item">
+                                <button type="submit" name="prev_page" class="btn btn-outline-secondary"
+                                        {% if current_page == 1 %}disabled{% endif %}
+                                        value="1">
+                                    <i class="fas fa-chevron-left"></i> Previous Page
+                                </button>
+                            </li>
+
+                            <li class="page-item">
+                                {% if current_page < total_pages %}
+                                    <button type="submit" name="next_page" class="btn btn-vibrant" value="1">
+                                        Next Page <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                {% else %}
+                                    <button type="submit" name="finish_quiz" class="btn btn-success btn-lg"
+                                        value="1">
+                                        Finish Quiz (Last Page) <i class="fas fa-flag-checkered"></i>
+                                    </button>
+                                {% endif %}
+                            </li>
+
+                        </ul>
+                    </nav>
+
+                </form>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4 glass-card">
+                <div class="card-header bg-primary text-white">
+                    <i class="fas fa-history"></i> Your Past Attempts
+                </div>
+
+                <ul class="list-group list-group-flush">
+                    {% for attempt in attempts %}
+                    <li class="list-group-item bg-dark-glass d-flex justify-content-between align-items-center text-white">
+                        Score:
+                        <span class="badge bg-{{ 'success' if attempt.score == attempt.total_questions else 'warning' }}">
+                            {{ attempt.score }}/{{ attempt.total_questions }}
+                        </span>
+                        <small class="text-muted">{{ attempt.completed_at.strftime('%b %d, %Y %H:%M') }}</small>
+                    </li>
+
+                    {% else %}
+                    <li class="list-group-item bg-dark-glass text-muted">No past quiz attempts found.</li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- FIXED JAVASCRIPT CODE BELOW (NO VS CODE ERRORS) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+$(document).ready(function () {
+
+    // FIX: Make Flask/Jinja-safe AND valid JavaScript
+    var elapsedTime = "{{ elapsed_time }}";
+    elapsedTime = parseInt(elapsedTime) || 0;
+
+    function formatTime(totalSeconds) {
+        var minutes = Math.floor(totalSeconds / 60);
+        var seconds = totalSeconds % 60;
+
+        return (minutes < 10 ? '0' : '') + minutes + ":" +
+               (seconds < 10 ? '0' : '') + seconds;
+    }
+
+    $('#quiz-timer').text("Timer: " + formatTime(elapsedTime));
+
+    var timerInterval = setInterval(function () {
+        elapsedTime++;
+        $('#quiz-timer').text("Timer: " + formatTime(elapsedTime));
+    }, 1000);
+
+    $(window).on("beforeunload", function () {
+        clearInterval(timerInterval);
+    });
+});
+</script>
+
+{% endblock %}

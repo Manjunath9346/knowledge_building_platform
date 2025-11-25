@@ -1,0 +1,394 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2 class="section-title mb-4 text-white">Administration Center</h2>
+
+<div class="row">
+    <div class="col-12">
+        <div class="glass-card p-4">
+
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-pills mb-4 nav-justified" id="adminTabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#users">
+                        <i class="fas fa-users me-2"></i>Users
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#courses">
+                        <i class="fas fa-book-open me-2"></i>Courses
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#practice-panel">
+                        <i class="fas fa-question-circle me-2"></i>Practice Topics
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#reports-panel">
+                        <i class="fas fa-flag me-2"></i>Reports
+                    </button>
+                </li>
+
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#tickets-panel">
+                        <i class="fas fa-headset me-2"></i>Help Tickets
+                    </button>
+                </li>
+
+                <!-- NEW TAB -->
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#analytics-panel">
+                        <i class="fas fa-chart-line me-2"></i>Analytics
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content Wrapper -->
+            <div class="tab-content">
+
+                <!-- USERS TAB -->
+                <div class="tab-pane fade show active" id="users">
+                    <h3 class="text-white mb-3">Managed Users ({{ users|length }})</h3>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Username</th>
+                                    <th>Full Name</th>
+                                    <th>Role</th>
+                                    <th>Joined</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.fullname or 'N/A' }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'danger' if user.role=='admin' else 'info' }}">
+                                            {{ user.role | capitalize }}
+                                        </span>
+                                    </td>
+                                    <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        {% if user.role != 'admin' %}
+                                        <form method="POST" action="{{ url_for('admin_delete_user', user_id=user.id) }}">
+                                            <button class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Delete {{ user.username }}?')">
+                                                Delete
+                                            </button>
+                                        </form>
+                                        {% else %}
+                                        <span class="text-secondary">Protected</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- COURSES TAB -->
+                <div class="tab-pane fade" id="courses">
+                    <h3 class="text-white mb-3">Managed Courses ({{ courses|length }})</h3>
+
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title</th>
+                                    <th>Uploader</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for c in courses %}
+                                <tr>
+                                    <td>{{ c.id }}</td>
+                                    <td><a class="text-info" href="{{ url_for('course_detail', course_id=c.id) }}">{{ c.title }}</a></td>
+                                    <td>{{ c.uploader }}</td>
+                                    <td>
+                                        <form method="POST" action="{{ url_for('admin_delete_course', course_id=c.id) }}">
+                                            <button class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Delete {{ c.title }}?')">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- PRACTICE TOPICS TAB -->
+                <div class="tab-pane fade" id="practice-panel">
+                    <h3 class="text-white mb-3">Practice Topic Management</h3>
+
+                    <a href="{{ url_for('admin_add_topic') }}" class="btn btn-vibrant mb-3">
+                        <i class="fas fa-plus me-2"></i>Add New Topic
+                    </a>
+
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Topic Name</th>
+                                    <th>Category</th>
+                                    <th>Questions</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for topic in topics %}
+                                <tr>
+                                    <td>{{ topic.id }}</td>
+                                    <td>{{ topic.name }}</td>
+                                    <td><span class="badge bg-secondary">{{ topic.category }}</span></td>
+                                    <td>{{ topic.question_count }}</td>
+                                    <td>
+                                        <a href="{{ url_for('admin_add_question', topic_id=topic.id) }}"
+                                            class="btn btn-sm btn-info">Add/Edit Questions</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- REPORTS TAB -->
+                <div class="tab-pane fade" id="reports-panel">
+                    <h3 class="text-white mb-3">Course Reports ({{ reports|length }})</h3>
+
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Course</th>
+                                    <th>Reporter</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for report in reports %}
+                                <tr>
+                                    <td>{{ report.id }}</td>
+
+                                    <td>
+                                        {% if report.reported_course_id %}
+                                        <a href="{{ url_for('course_detail', course_id=report.reported_course_id) }}"
+                                            class="text-warning">{{ report.course_title }}</a>
+                                        {% else %}
+                                        <span class="text-muted">Deleted Course</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>{{ report.reporter_username }}</td>
+                                    <td>{{ report.reason }}</td>
+
+                                    <td>
+                                        <form method="POST"
+                                            action="{{ url_for('update_status', item_type='report', item_id=report.id) }}"
+                                            class="d-flex">
+
+                                            <select name="status"
+                                                class="form-select form-select-sm me-2 bg-dark text-white-50">
+                                                <option value="open" {% if report.status=='open' %}selected{% endif %}>
+                                                    Open</option>
+                                                <option value="reviewed" {% if report.status=='reviewed' %}selected{% endif %}>
+                                                    Reviewed</option>
+                                                <option value="closed" {% if report.status=='closed' %}selected{% endif %}>
+                                                    Closed</option>
+                                            </select>
+
+                                            <button class="btn btn-sm btn-info">Update</button>
+                                        </form>
+                                    </td>
+
+                                    <td>{{ report.created_at.strftime('%Y-%m-%d') }}</td>
+
+                                    <td>
+                                        {% if report.reported_course_id %}
+                                        <form method="POST"
+                                            action="{{ url_for('admin_delete_course', course_id=report.reported_course_id) }}">
+                                            <button class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Delete this course?')">
+                                                Delete Course
+                                            </button>
+                                        </form>
+                                        {% else %}
+                                        <span class="text-secondary">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+
+                <!-- HELP TICKETS TAB -->
+                <div class="tab-pane fade" id="tickets-panel">
+                    <h3 class="text-white mb-3">Help Tickets ({{ help_tickets|length }})</h3>
+
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>User</th>
+                                    <th>Subject</th>
+                                    <th>Message</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for ticket in help_tickets %}
+                                <tr>
+                                    <td>{{ ticket.id }}</td>
+                                    <td>{{ ticket.username }}</td>
+                                    <td>{{ ticket.subject }}</td>
+                                    <td>{{ ticket.message[:50] }}...</td>
+                                    <td>
+                                        <form method="POST"
+                                            action="{{ url_for('update_status', item_type='ticket', item_id=ticket.id) }}"
+                                            class="d-flex">
+
+                                            <select name="status"
+                                                class="form-select form-select-sm me-2 bg-dark text-white-50">
+                                                <option value="open" {% if ticket.status=='open' %}selected{% endif %}>
+                                                    Open</option>
+                                                <option value="in-progress" {% if ticket.status=='in-progress' %}selected{% endif %}>
+                                                    In Progress</option>
+                                                <option value="resolved" {% if ticket.status=='resolved' %}selected{% endif %}>
+                                                    Resolved</option>
+                                            </select>
+
+                                            <button class="btn btn-sm btn-info">Update</button>
+                                        </form>
+                                    </td>
+                                    <td>{{ ticket.created_at.strftime('%Y-%m-%d') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ANALYTICS TAB -->
+                <div class="tab-pane fade" id="analytics-panel">
+                    <h3 class="text-white mb-3">Analytics Dashboard</h3>
+
+                    <div class="row text-center mb-4">
+                        <div class="col-md-4">
+                            <div class="glass-card p-3">
+                                <h5 class="text-info">Total Users</h5>
+                                <h2>{{ total_users }}</h2>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="glass-card p-3">
+                                <h5 class="text-warning">Total Courses</h5>
+                                <h2>{{ total_courses }}</h2>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="glass-card p-3">
+                                <h5 class="text-success">Total Lessons</h5>
+                                <h2>{{ total_lessons }}</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <canvas id="signupChart" height="100"></canvas>
+                    <canvas id="uploadChart" height="100" class="mt-5"></canvas>
+
+                    <h4 class="text-warning mt-5">Top Creators</h4>
+                    <ul>
+                        {% for row in top_creators %}
+                        <li>{{ row.username }} — {{ row.subs }} subscribers</li>
+                        {% endfor %}
+                    </ul>
+
+                    <h4 class="text-info mt-4">Top Courses</h4>
+                    <ul>
+                        {% for row in top_courses %}
+                        <li>{{ row.title }} — {{ row.likes }} likes</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CHART.JS -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Use JSON.parse on the JSON string output to convert it into a JavaScript object
+// The | tojson filter converts the Python list/dict into a JSON string.
+// We're using JSON.parse to ensure the JS interpreter sees a valid object assignment.
+
+const signupDataJSON = '{{ daily_signups | tojson | safe }}';
+const uploadDataJSON = '{{ daily_uploads | tojson | safe }}';
+
+// Parse the JSON strings into actual JavaScript arrays/objects
+const signupData = JSON.parse(signupDataJSON);
+const uploadData = JSON.parse(uploadDataJSON);
+
+// Now the Chart.js calls should work with the valid JavaScript objects
+new Chart(document.getElementById('signupChart'), {
+    type: 'line',
+    data: {
+        labels: signupData.map(r => r.day),
+        datasets: [{
+            label: "User Signups",
+            data: signupData.map(r => r.count),
+            borderColor: "#ffcc00",
+            borderWidth: 2
+        }]
+    }
+});
+
+new Chart(document.getElementById('uploadChart'), {
+    type: 'line',
+    data: {
+        labels: uploadData.map(r => r.day),
+        datasets: [{
+            label: "Course Uploads",
+            data: uploadData.map(r => r.count),
+            borderColor: "#00e6e6",
+            borderWidth: 2
+        }]
+    }
+});
+</script>
+{% endblock %}

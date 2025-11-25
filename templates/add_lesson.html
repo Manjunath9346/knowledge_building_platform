@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Add Lesson to {{ section.title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="glass-card p-4 my-5">
+            <h2 class="section-title text-white mb-4">Add Lesson to: <span class="text-info">{{ section.title }}</span></h2>
+
+            <form method="POST" action="{{ url_for('add_lesson', section_id=section.id) }}" enctype="multipart/form-data">
+                
+                <div class="mb-3">
+                    <label for="title" class="form-label text-white-50">Lesson Title</label>
+                    <input type="text" class="form-control bg-dark text-white" id="title" name="title" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="content_type" class="form-label text-white-50">Content Type</label>
+                    <select class="form-select bg-dark text-white" id="content_type" name="content_type" required onchange="toggleContentFields(this.value)">
+                        <option value="">-- Select Content Type --</option>
+                        <option value="text">Text/Article (Markdown/HTML)</option>
+                        <option value="video">Video File (.mp4, etc.)</option>
+                        <option value="pdf">PDF Document</option>
+                        <option value="document">Document/Slides</option>
+                    </select>
+                </div>
+
+                <div id="file-upload-field" class="mb-3" style="display:none;">
+                    <label for="file" class="form-label text-white-50">Upload File</label>
+                    <input type="file" class="form-control bg-dark text-white" id="file" name="file">
+                    <small class="text-secondary">Max file size applies. Allowed types: video, pdf, doc, ppt.</small>
+                </div>
+
+                <div id="text-content-field" class="mb-3" style="display:none;">
+                    <label for="content_text" class="form-label text-white-50">Content Text (For Text/Article Type)</label>
+                    <textarea class="form-control bg-dark text-white" id="content_text" name="content_text" rows="8" placeholder="Enter lesson content here. Supports basic text/HTML."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-vibrant w-100 mt-3">Create Lesson</button>
+            </form>
+
+            <a href="{{ url_for('manage_course_content', course_id=section.course_id) }}" class="btn btn-outline-secondary w-100 mt-2">Cancel</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleContentFields(contentType) {
+    const fileField = document.getElementById('file-upload-field');
+    const textField = document.getElementById('text-content-field');
+    
+    // Reset required attributes
+    document.getElementById('file').required = false;
+    document.getElementById('content_text').required = false;
+
+    if (contentType === 'text') {
+        fileField.style.display = 'none';
+        textField.style.display = 'block';
+        document.getElementById('content_text').required = true;
+    } else if (contentType === 'video' || contentType === 'pdf' || contentType === 'document') {
+        fileField.style.display = 'block';
+        textField.style.display = 'none';
+        document.getElementById('file').required = true;
+    } else {
+        fileField.style.display = 'none';
+        textField.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}
