@@ -210,8 +210,9 @@ def get_db():
 
 @app.teardown_appcontext
 def close_db(exc):
-    if hasattr(g, 'db'):
-        g.db.close()
+    db = getattr(g, 'db', None)
+    if db is not None:
+        db.close()
 
 def execute_query(query, args=(), one=False, commit=False):
     db = get_db()
