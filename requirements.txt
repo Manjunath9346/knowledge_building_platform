@@ -8,3 +8,7 @@ click
 # --- NEW DEPENDENCIES ---
 Flask-Mail
 Flask-Dance
+
+flask
+gunicorn
+flask-cors
