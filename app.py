@@ -2272,5 +2272,5 @@ def quiz_results(topic_id):
                            time_taken=time_taken,
                            results=detailed_results)
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
