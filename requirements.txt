@@ -9,6 +9,7 @@ click
 Flask-Mail
 Flask-Dance
 
+Pillow
 flask
 gunicorn
 flask-cors
