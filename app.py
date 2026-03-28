@@ -1,6 +1,6 @@
 import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-
+import config
 import mysql.connector
 import re
 from flask import Flask, render_template, request, redirect, url_for, flash, session, send_from_directory, g, abort, jsonify
@@ -202,7 +202,10 @@ def after_google_login():
 # --- Database Functions ---
 def get_db():
     if not hasattr(g, 'db'):
-        g.db = mysql.connector.connect(**config.DB_CONFIG)
+        try:
+            g.db = mysql.connector.connect(**config.DB_CONFIG)
+        except:
+            g.db = None
     return g.db
 
 @app.teardown_appcontext
@@ -212,6 +215,8 @@ def close_db(exc):
 
 def execute_query(query, args=(), one=False, commit=False):
     db = get_db()
+    if db is None:
+        return None if one else []
     cursor = db.cursor(dictionary=True)
     cursor.execute(query, args)
     if commit:
@@ -473,7 +478,7 @@ def inject_notifications():
 # ----------------- Routes -----------------
 @app.route('/')
 def index():
-    courses = execute_query('SELECT c.*, u.username as uploader, u.id as uploader_id FROM courses c LEFT JOIN users u ON c.uploaded_by = u.id ORDER BY c.created_at DESC')
+    courses = execute_query('SELECT c.*, u.username as uploader, u.id as uploader_id FROM courses c LEFT JOIN users u ON c.uploaded_by = u.id ORDER BY c.created_at DESC') or []
     subscribed_ids = []
     if 'user_id' in session:
         subs = execute_query('SELECT creator_id FROM subscriptions WHERE subscriber_id=%s', (session['user_id'],))
@@ -609,7 +614,7 @@ def explore():
 
     sql += ' ORDER BY c.created_at DESC'
 
-    courses = execute_query(sql, tuple(params))
+    courses = execute_query(sql, tuple(params)) or []
 
     subscribed_ids = []
     if 'user_id' in session:
@@ -1202,7 +1207,7 @@ def creator_page(username):
     if not creator:
         flash('Creator not found')
         return redirect(url_for('explore'))
-    courses = execute_query('SELECT * FROM courses WHERE uploaded_by=%s ORDER BY created_at DESC', (creator['id'],))
+    courses = execute_query('SELECT * FROM courses WHERE uploaded_by=%s ORDER BY created_at DESC', (creator['id'],)) or []
     subscribed_ids = []
     if 'user_id' in session:
         subs = execute_query('SELECT creator_id FROM subscriptions WHERE subscriber_id=%s', (session['user_id'],))
@@ -1353,7 +1358,7 @@ def admin_dashboard():
         FROM courses c
         JOIN users u ON c.uploaded_by = u.id
         ORDER BY c.created_at DESC
-    ''')
+    ''') or []
     reports = execute_query('''
         SELECT r.*, reporter.username as reporter_username, course.title as course_title
         FROM reports r
@@ -1416,7 +1421,7 @@ def admin_dashboard():
         GROUP BY l.course_id
         ORDER BY likes DESC
         LIMIT 5
-    """)
+    """) or []
 
     return render_template(
         'admin_dashboard.html',
